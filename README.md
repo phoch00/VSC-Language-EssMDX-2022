@@ -1,6 +1,6 @@
 # MDX README
 
-This is a language extension for VS Code for the MDX Language With Essbase/MaxL Related Functions
+This is a language extension for VS Code for the MDX Language With Essbase Related Functions
 
 ## To Install
 1. Download the github repository
