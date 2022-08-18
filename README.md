@@ -1,4 +1,4 @@
-# MaxL README
+# MDX README
 
 This is a language extension for VS Code for the MDX Language With Essbase/MaxL Related Functions
 
