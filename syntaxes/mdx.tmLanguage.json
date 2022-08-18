@@ -1,6 +1,7 @@
 {
-	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "mdx",
+	"filetypes": ["mdx"],
+	"scopeName": "source.mdx",
 	"patterns": [
 		{"include": "#properties"},
 		{"include": "#keywords"},
@@ -179,6 +180,6 @@
 				}
 			]
 		}
-	},
-	"scopeName": "source.mdx"
+	}
+
 }

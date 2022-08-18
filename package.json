@@ -1,8 +1,23 @@
 {
-    "name": "EssMDX",
-    "displayName": "EssMdx",
+    "name": "essmdx",
+    "publisher": "vscode-essbase",
+    "displayName": "Essbase Mdx",
     "description": "MDX Support for Essbase Calcs",
-    "version": "0.0.1",
+    "version": "0.0.2",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/phoch00/VSC-Language-EssMDX-2022"
+    },
+    "license": "SEE LICENSE IN LICENSE.md",
+    "bugs": {
+        "url": "https://github.com/phoch00/VSC-Language-EssMDX-2022/issues"
+    },
+    "icon": "images/cubelogo.png",
+    "galleryBanner": {
+        "color": "#6A92B1",
+        "theme": "dark"
+    },
+
     "engines": {
         "vscode": "^1.45.0"
     },
@@ -20,6 +35,31 @@
             "language": "mdx",
             "scopeName": "source.mdx",
             "path": "./syntaxes/mdx.tmLanguage.json"
-        }]
+        }],
+        "snippets": [{
+            "language": "mxl",
+            "path": "./snippets/mxl.snippets.json"
+        }],
+        "configuration": {
+            "type": "object",
+            "title": "Essbase MaxL Script Language",
+            "properties": {
+                "csc.maxNumberOfProblems": {
+                    "type": "number",
+                    "default": 100,
+                    "description": "Controls the maximum number of problems produced by the server."
+                }
+            }
+        },
+        "configurationDefaults": {
+            "[mxl]": {
+                "editor.tabSize": 4,
+                "editor.insertSpaces": false,
+                "editor.detectIndentation": true,
+                "editor.trimAutoWhitespace": true,
+                "editor.autoClosingBrackets": "always"
+            }
+        }
+
     }
 }
