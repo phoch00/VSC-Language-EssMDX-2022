@@ -1,0 +1,111 @@
+Case
+
+	WHEN IsAccType ( [Account].CurrentMember, Last ) AND (IsGeneration([Period].CurrentMember , 5))
+
+		THEN
+
+			 ([Period].CurrentMember, [Month])
+
+
+	WHEN NOT( IsAccType ( [Account].CurrentMember, Last ) )
+		AND ( NOT IsAccType ( [Account].CurrentMember, First ) )
+		AND (isGeneration([Period].CurrentMember, 5))
+
+		THEN
+
+			sum( PeriodsToDate (  [Period].Generations(4) ) , [Month]  )
+
+	ELSE
+
+		missing
+
+END
+
+CASE
+
+WHEN IsGeneration([Time], 5) AND IsGeneration([Advertiser], 4)
+THEN
+	[New Accounts]
+
+
+ELSE
+
+	SUM(CrossJoin(Descendants([Time].CurrentMember, Quarters, SELF_AND_AFTER), Descendants([Advertiser].CurrentMember, NamedAdv, SELF_AND_BEFORE)), [New Accounts] )
+
+END
+
+
+/* Rolling 12-month average */
+WITH
+MEMBER [Measures].[Rolling Unit Sales] AS
+'Avg (
+  LastPeriods (
+    12,
+    [Time].CurrentMember
+  ),
+  [Measures].[Unit Sales]
+)'
+SELECT
+{ [Measures].[Unit Sales], [Measures].[Rolling Unit Sales] }
+on columns,
+{ 
+  [Time].[Q1, 1999].Children
+}
+on rows
+FROM [WM2K.Sales]
+WHERE [Product].[Toys]
+
+
+/* Year-to-year comparison */
+WITH
+MEMBER [Measures].[Year Ago Units Change] AS
+'[Measures].[Unit Sales]
+- ([Measures].[Unit Sales], 
+   ParallelPeriod (
+    [Time].[Year],
+    1,
+    [Time].CurrentMember
+   )
+  )'
+SELECT
+{ [Measures].[Unit Sales], [Measures].[Year Ago Units Change] }
+on columns,
+{ [Time].[1999],
+  [Time].[Q1, 1999],
+  [Time].[Q1, 1999].Children
+}
+on rows
+FROM [WM2K.Sales]
+WHERE [Product].[Toys]
+
+
+/* Testing for a UDA value with IsUDA() */
+WITH
+MEMBER [Measures].[Target] AS
+'Iif (
+  IsUDA ([Market].CurrentMember, "Major Market"),
+  1.10,
+  1.15
+) 
+* ([Measures].[Sales], [Year].CurrentMember.PrevMember)'
+SELECT
+CrossJoin (
+  { Market.Children },
+  { [Measures].[Sales], [Measures].[Target] }
+)
+on axis(0),
+{ Product.Children }
+on axis(1)
+FROM Sample.Basic
+WHERE ([Year].[Qtr3])
+
+
+/* CrossJoin */
+SELECT
+CrossJoin (
+ { [Time].[Q1, 1999], [Time].[Q2, 1999] },
+ { [Measures].[Dollar Sales], [Measures].[Unit Sales] }
+)ß
+ON COLUMNS ,
+{ [Product].[Tools], [Product].[Toys] } ON ROWS
+FROM [WM2K.Sales]

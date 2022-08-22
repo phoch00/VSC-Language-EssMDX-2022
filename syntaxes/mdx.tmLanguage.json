@@ -2,17 +2,166 @@
 	"name": "mdx",
 	"filetypes": ["mdx"],
 	"scopeName": "source.mdx",
-	"patterns": [
-		{"include": "#properties"},
-		{"include": "#keywords"},
-		{"include": "#comments"},
-		{"include": "#tuples"},
-		{"include": "#sets"},
-		{"include": "#strings"},
-		{"include": "#constants"}
-		
-	],
-	"repository": {
+    "patterns": [{
+            "include": "#comments"
+        },
+        {
+            "include": "#punctuation"
+        },
+        {
+            "include": "#keywords"
+        },
+        {
+            "include": "#constants-and-special-vars"
+        },
+        {
+            "include": "#strings"
+        }
+    ],
+
+    "repository": {
+        "comments": {
+            "patterns": [{
+                    "name": "comment.block.empty.mdx",
+                    "match": "/\\*\\*/",
+                    "captures": {
+                        "0": {
+                            "name": "punctuation.definition.comment.mdx"
+                        }
+                    }
+                },
+                {
+                    "include": "#comments-inline"
+                }
+            ]
+        },
+        "comments-inline": {
+            "patterns": [{
+                    "include": "#comments-block"
+                },
+                {
+                    "match": "((//).*)$",
+                    "captures": {
+                        "1": {
+                            "name": "comment.line.double-slash.mdx"
+                        }
+                    }
+                }
+            ]
+        },
+        "comments-block": {
+            "patterns": [{
+                "name": "comment.block.mdx",
+                "begin": "/\\*",
+                "end": "\\*/",
+                "patterns": [{
+                    "include": "#comments-block"
+                }]
+            }]
+        },
+        "constants-and-special-vars": {
+            "patterns": [{
+                    "name": "constant.language.mdx",
+                    "match": "(?i)(first|last|missing|SELF|BEFORE|AFTER|BEFORE_AND_AFTER|SELF_BEFORE_AFTER|SELF_AND_BEFORE|SELF_AND_AFTER|rows|columns|axis)\\b"
+                },
+                {
+                    "name": "constant.numeric.mdx",
+                    "match": "(?<=[^$])((0(x|X)[0-9a-fA-F]+)|([0-9]+(\\.[0-9]+)?))"
+                },
+                {
+                    "include": "#function-identifier"
+                }
+
+            ]
+        },
+        "function-identifier": {
+            "patterns": [{
+                    "name": "entity.name.function.mdx",
+					"match": "(?i)\\b(Abs|Aggregate|Ancestor|Ancestors|Attribute|AttributeEx|Avg|BottomCount|BottomPercent|BottomSum|CellValue|Children|ClosingPeriod|CoalesceEmpty|Concat|Contains|Count|Cousin|CrossJoin|CurrentAxisMember|CurrentMember|CurrentTuple|DateDiff|DatePart|DateRoll|DateToMember|DefaultMember|Descendants|Distinct|Dimension|DrilldownByLayer|DrilldownMember|DrillupByLayer|DrillupMember|DTS|EnumText|EnumValue|Except|Exp|Extract|Factorial|Filter|FirstChild|FirstSibling|FormatDate|Generate|Generation|Generations|GetFirstDate|GetFirstDay|GetLastDate|GetLastDay|GetNextDay|GetRoundDate|Head|Hierarchize|InStr|InString|Int|Intersect|IsAccType|IsAncestor|IsChild|IsEmpty|IsGeneration|IsLeaf|IsLevel|IsMatch|IsSibling|IsUda|IsValid|Item|JulianDate|Lag|LastChild|LastPeriods|LastSibling|Lead|Leaves|Left|Len|Level|Levels|LinkMember|Ln|Log|Log10|Lower|LTrim|Max|Median|MemberRange|Members|Min|Mod|NextMember|NonEmptyCount|NonEmptySubset|NTile|NumToStr|OpeningPeriod|Order|Ordinal|ParallelPeriod|Parent|Percentile|PeriodsToDate|Power|PrevMember|Rank|RealValue|RelMemberRange|Remainder|Right|Round|RTrim|Siblings|Stddev|Stddevp|StrToMbr|StrToNum|Subset|Substring|Sum|Tail|Todate|TodateEx|Today|TopCount|TopPercent|TopSum|Truncate|TupleRange|Uda|Union|UnixDate|Upper|Value|WithAttr|WithAttrEx|xTD)\\b"
+                },
+                {
+                    "name": "entity.name.function.mdx",
+					"match": "(?i)\\b(action|alter|calculate|calculation|calculations|call|case|when|then|else|cell|clear|create|cube|drillthrough|drop|end|existing|global|if|iif|on|refresh|scope|session|subcube|update|nonempty|nonemptyblock)\\b"
+                }
+
+            ]
+        },
+        "keywords": {
+            "patterns": [
+                {
+                    "name": "keyword.subvar.mdx",
+                    "match": "(\\&[a-zA-Z0-9_]+)"
+                },
+                {
+                    "name": "keyword.operator.comparison.mdx",
+                    "match": "(==|!=|<=|<|>=|>)"
+                },
+                {
+                    "name": "keyword.operator.assignment.arithmetic.mdx",
+                    "match": "(([+*/%-]|\\~)=)"
+                },
+                {
+                    "name": "keyword.operator.assignment.mdx",
+                    "match": "(=)"
+                },
+                {
+                    "name": "keyword.operator.crossdim.mdx",
+                    "match": "(?:->)"
+                },
+				{
+					"comment": "Operator Keywords",
+					"name": "keyword.other.mdx",
+					"match": "(?i)\\b(and|is|not|or|xor)\\b"
+				},
+				{
+					"comment": "Type Keywords",
+					"name": "keyword.other.mdx",
+					"match": "(?i)\\b(as|member|set)\\b"
+				},
+				{
+					"comment": "Class Keywords",
+					"name": "keyword.other.mdx",
+					"match": "(?i)\\b(with|select|from|where)\\b"
+				},
+				{
+					"comment": "Language Keywords",
+					"name": "keyword.other.mdx",
+					"match": "(?i)\\b(false|null|true)\\b"
+				}
+
+            ]
+        },
+		"tuples":{
+			"patterns":[
+				{
+					"comment": "Match Tuples",
+					"match": "(\\.?\\&?\\[)([^\\]]*)(\\])",
+					"captures": {
+						"1": { "name": "constants-and-special-vars" },
+						"2": { "name": "string.interpolated.expression.mdx"},
+						"3": { "name": "constants-and-special-vars" }
+					}
+				}
+			]
+		},
+		"sets":{
+			"patterns":[
+				{
+					"begin": "\\{",
+					"end": "\\}",
+					"beginCaptures": {
+					  "0": {"name": "constants-and-special-vars"}
+					},
+					"endCaptures": {
+					  "0": {"name": "constants-and-special-vars"}
+					},
+					"patterns": [
+						{ "include": "#tuples"},
+						{ "include": "#keywords"}
+					]
+				}
+			]
+		},
 		"properties":{
 			"patterns": [
 				{
@@ -33,153 +182,133 @@
 				}
 			]
 		},
-		"keywords": {
-			"patterns": [
-				{
-					"comment": "Function Keywords",
-					"name": "keyword.control.mdx",
-					"match": "(?i)\\b(absolute|actionparameterset|addcalculatedmembers|after|aggregate|all|allmembers|ancestor|ancestors|asc|ascendants|average|axis|basc|bdesc|before|before_and_after|bottomcount|bottompercent|bottomsum|by|cache|calculationcurrentpass|calculationpassvalue|cellformulasetlist|chapters|children|closingperiod|coalesceempty|column|columns|correlation|count|cousin|covariance|covariancen|createpropertyset|createvirtualdimension|crossjoin|current|currentcube|currentmember|default_member|defaultmember|desc|descendants|description|dimension|dimensions|distinct|distinctcount|drilldownlevel|drilldownlevelbottom|drilldownleveltop|drilldownmember|drilldownmemberbottom|drilldownmembertop|drilluplevel|drillupmember|empty|error|except|excludeempty|extract|filter|firstchild|firstsibling|for|freeze|generate|group|grouping|head|hidden|hierarchize|hierarchy|ignore|iif|includeempty|index|intersect|isancestor|isempty|isgeneration|isleaf|issibling|item|lag|lastchild|lastperiods|lastsibling|lead|leaves|level|levels|linkmember|linregintercept|linregpoint|linregr2|linregslope|linregvariance|lookupcube|max|measure|median|members|membertostr|min|mtd|name|nametoset|nest|nextmember|no_allocation|no_properties|non|nonemptycrossjoin|not_related_to_facts|openingperiod|pages|parallelperiod|parent|pass|periodstodate|post|predict|prevmember|properties|property|qtd|rank|recursive|relative|rollupchildren|root|rows|sections|self|self_and_after|self_and_before|self_before_after|settoarray|settostr|solve_order|sort|stddev|stddevp|stdev|stdevp|storage|stripcalculatedmembers|strtomember|strtoset|strtotuple|strtoval|strtovalue|subset|sum|tail|this|toggledrillstate|topcount|toppercent|topsum|totals|tree|tupletostr|type|union|unique|uniquename|use|use_equal_allocation|use_weighted_allocation|use_weighted_increment|username|validmeasure|value|var|variance|variancep|varp|visual|visualtotals|wtd|ytd|generations|isuda|tuplerange)\\b"
-				},
-				{
-					"comment": "Action Keywords",
-					"name": "keyword.other.mdx",
-					"match": "(?i)\\b(action|alter|calculate|calculation|calculations|call|case|when|then|else|cell|clear|create|cube|drillthrough|drop|end|existing|global|if|on|refresh|scope|session|subcube|update|nonempty|nonemptyblock)\\b"
-				},
-				{
-					"comment": "Operator Keywords",
-					"name": "keyword.other.mdx",
-					"match": "(?i)\\b(and|is|not|or|xor)\\b"
-				},
-				{
-					"comment": "Type Keywords",
-					"name": "keyword.other.mdx",
-					"match": "(?i)\\b(as|member|set)\\b"
-				},
-				{
-					"comment": "Class Keywords",
-					"name": "keyword.other.mdx",
-					"match": "(?i)\\b(with|select|from|where)\\b"
-				},
-				{
-					"comment": "Language Keywords",
-					"name": "keyword.other.mdx",
-					"match": "(?i)\\b(false|null|true)\\b"
-				},
-				{
-					"comment": "String Keywords",
-					"name": "keyword.other.mdx",
-					"match": "(?i)\\b(format_string)\\b"
-				}	
-			]
-		},
-		"strings": {
-			"patterns": [
-				{
-					"name": "string.quoted.double.mdx",
-					"begin": "\"",
-					"end": "\"",
-					"beginCaptures": {
-					  "0": {"name": "keyword.other.mdx"}
-					},
-					"endCaptures": {
-					  "0": {"name": "keyword.other.mdx"}
-					}
-				},
-				{
-					"name": "string.quoted.single.mdx",
-					"begin": "'",
-					"end": "'",
-					"beginCaptures": {
-					  "0": {"name": "keyword.other.mdx"}
-					},
-					"endCaptures": {
-					  "0": {"name": "keyword.other.mdx"}
-					}
-				}
-			]
-		},
-		"comments":{
-			"patterns": [
-				{
-					"name": "comment.line.mdx",
-					"begin": "--",
-					"end": "\\n",
-					"beginCaptures": {
-					  "0": {"name": "comment.line.mdx"}
-					},
-					"endCaptures": {
-					  "0": {"name": "comment.line.mdx"}
-					}
-				},
-				{
-					"name": "comment.line.mdx",
-					"begin": "//",
-					"end": "\\n",
-					"beginCaptures": {
-					  "0": {"name": "comment.line.mdx"}
-					},
-					"endCaptures": {
-					  "0": {"name": "comment.line.mdx"}
-					}
-				},
-				{
-					"name": "comment.block.mdx",
-					"begin": "/\\*",
-					"end": "\\*/",
-					"beginCaptures": {
-					  "0": {"name": "comment.block.mdx"}
-					},
-					"endCaptures": {
-					  "0": {"name": "comment.block.mdx"}
-					}
-				}
-			]
-		},
-		"constants":{
-			"patterns":[
-				{
-					"comment": "General Numeric + #MISSING",
-					"name": "constant.numeric.mdx",
-					"match": "\\s*(?<=[^$])((0(x|X)[0-9a-fA-F]+)|([0-9]+(\\.[0-9]+)?))\\b|(?i)MISSING"
-				},
-				{
-					"comment": "Operators",
-					"name": "support.type.property-name",
-					"match": "->|=|!=|==|<|>|\\+|-|\\/|\\*"
-				}
-			]
-		},
-		"tuples":{
-			"patterns":[
-				{
-					"comment": "Match Tuples",
-					"match": "(\\.?\\&?\\[)([^\\]]*)(\\])",
-					"captures": {
-						"1": { "name": "constant.character.mdx" },
-						"2": { "name": "string.quoted.other.brackets.essmdx" },
-						"3": { "name": "constant.character.essmdx" }
-					}
-				}
-			]
-		},
-		"sets":{
-			"patterns":[
-				{
-					"begin": "\\{",
-					"end": "\\}",
-					"beginCaptures": {
-					  "0": {"name": "constant.character.essmdx"}
-					},
-					"endCaptures": {
-					  "0": {"name": "constant.character.essmdx"}
-					},
-					"patterns": [
-						{ "include": "#tuples"},
-						{ "include": "#keywords"}
-					]
-				}
-			]
-		}
-	}
+        "string-interp": {
+            "patterns": [{
+                    "match": "(\\$[a-zA-Z0-9_]+)",
+                    "captures": {
+                        "1": {
+                            "name": "variable.parameter.mdx"
+                        }
+                    }
+                },
+                {
+                    "name": "string.interpolated.expression.mdx",
+                    "begin": "\\(",
+                    "end": "\\)",
+                    "patterns": [{
+                            "include": "#keyword.control.mdx"
+                        },
 
+                        {
+                            "include": "#function-identifier"
+                        },
+                        {
+                            "include": "#strings"
+                        },
+                        {
+                            "include": "#constants-and-special-vars",
+                            "name": "variable.parameter.mdx"
+                        },
+                        {
+                            "name": "variable.parameter.mdx",
+                            "match": "(\\$[a-zA-Z0-9_]+)"
+                        }
+                    ]
+                },
+                {
+                    "name": "constant.character.escape.mdx",
+                    "match": "\\\\."
+                }
+            ]
+        },
+        "strings": {
+            "patterns": [{
+                    "name": "string.interpolated.triple.double.mdx",
+                    "begin": "(?<!r)\"\"\"",
+                    "end": "\"\"\"(?!\")",
+                    "patterns": [{
+                        "include": "#string-interp"
+                    }]
+                },
+                {
+                    "name": "string.interpolated.triple.single.mdx",
+                    "begin": "(?<!r)'''",
+                    "end": "'''(?!')",
+                    "patterns": [{
+                        "include": "#string-interp"
+                    }]
+                },
+                {
+                    "name": "string.quoted.triple.double.mdx",
+                    "begin": "r\"\"\"",
+                    "end": "\"\"\"(?!\")"
+                },
+                {
+                    "name": "string.quoted.triple.single.mdx",
+                    "begin": "r'''",
+                    "end": "'''(?!')"
+                },
+                {
+                    "name": "string.interpolated.double.mdx",
+                    "begin": "(?<!\\|r)\"",
+                    "end": "\"",
+                    "patterns": [{
+                            "name": "invalid.string.newline",
+                            "match": "\\n"
+                        },
+                        {
+                            "include": "#string-interp"
+                        }
+                    ]
+                },
+                {
+                    "name": "string.quoted.double.mdx",
+                    "begin": "r\"",
+                    "end": "\"",
+                    "patterns": [{
+                        "name": "invalid.string.newline",
+                        "match": "\\n"
+                    }]
+                },
+                {
+                    "name": "string.interpolated.single.mdx",
+                    "begin": "(?<!\\|r)'",
+                    "end": "'",
+                    "patterns": [{
+                            "name": "invalid.string.newline",
+                            "match": "\\n"
+                        },
+                        {
+                            "include": "#string-interp"
+                        }
+                    ]
+                },
+                {
+                    "name": "string.quoted.single.mdx",
+                    "begin": "r'",
+                    "end": "'",
+                    "patterns": [{
+                        "name": "invalid.string.newline",
+                        "match": "\\n"
+                    }]
+                }
+            ]
+        },
+        "punctuation": {
+            "patterns": [{
+                    "name": "punctuation.comma.mdx",
+                    "match": ","
+                },
+                {
+                    "name": "punctuation.terminator.mdx",
+                    "match": ";"
+                },
+                {
+                    "name": "punctuation.dot.mdx",
+                    "match": "\\."
+                }
+
+            ]
+        }
+    }
 }
